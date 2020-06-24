@@ -21,7 +21,7 @@ public class FXMLController {
     private URL location;
 
     @FXML
-    private ChoiceBox<?> boxAnno;
+    private ChoiceBox<Integer> boxAnno;
 
     @FXML
     private TextField txtFieldStudenti;
@@ -31,12 +31,40 @@ public class FXMLController {
 
     @FXML
     void handleCreaGrafo(ActionEvent event) {
+    	
+    	txtResult.clear();
+    	Integer selezionato=boxAnno.getValue();
+    	if(selezionato==null) {
+    		txtResult.appendText("DEVI SELEZIONARE UN ANNO");
+    		return;
+    	}
+    	
+    	txtResult.appendText(model.creaGrafo(selezionato));
+    	txtResult.appendText("\nGRAFO CONNESSO: "+model.grafoConnesso()+"\nCOMPONENTI CONNESSE: "+model.getNumComponentiConnesse());
+    	txtResult.appendText(model.mostraProlifica());
 
     }
 
     @FXML
     void handleSimula(ActionEvent event) {
-
+    	txtResult.clear();
+    	Integer selezionato=boxAnno.getValue();
+    	if(selezionato==null) {
+    		txtResult.appendText("DEVI SELEZIONARE UN ANNO");
+    		return;
+    	}
+    	
+    	int studenti=0;
+    	try {
+    		studenti=Integer.parseInt(txtFieldStudenti.getText());
+    	}
+    	catch(NumberFormatException e){
+    		txtResult.appendText("PARAMETRO ERRATO");
+    		return;
+    	}
+    	
+    	txtResult.appendText(model.simula(selezionato, studenti));
+    	
     }
 
     @FXML
@@ -49,5 +77,7 @@ public class FXMLController {
 
 	public void setModel(Model model) {
 		this.model = model;
+		boxAnno.getItems().clear();
+		boxAnno.getItems().addAll(model.getAnni());
 	}
 }
